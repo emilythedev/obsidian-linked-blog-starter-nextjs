@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react"
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from "react";
 import PostPreview from "../blog/post-preview";
-import { useRouter } from 'next/router'
 
 
 function useOutsideAlerter(ref, callback) {
@@ -36,11 +36,13 @@ function Search({ visible, setVisible }) {
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if (e.key === '/') {
         setVisible(true);
+        e.preventDefault();
       }
       if (e.key === 'Escape') {
         setVisible(false);
+        e.preventDefault();
       }
     }
     document.addEventListener("keydown", handleKeydown);
