@@ -13,7 +13,7 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
   const data = parseFileToObj(fullPath);
 
   type Items = {
-    [key: string]: string
+    [key: string]: any
   }
 
   const items: Items = {}
@@ -112,3 +112,18 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
   });
   return markdown
 }
+
+export async function getAllTags() {
+  const posts = await getAllPosts(['tags']);
+  // console.log(posts)
+
+  const allTags: string[] = [];
+
+  posts.forEach((post) => {
+    const tags = post.tags as string[];
+    tags.forEach(tag => allTags.includes(tag) || allTags.push(tag));
+  });
+  allTags.sort();
+
+  return allTags;
+};

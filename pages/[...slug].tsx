@@ -1,12 +1,12 @@
-import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
 import ErrorPage from 'next/error'
-import { getPostBySlug, getAllPosts, getLinksMapping } from '../lib/api'
-import { markdownToHtml } from '../lib/markdownToHtml'
-import type PostType from '../interfaces/post'
+import { useRouter } from 'next/router'
 import path from 'path'
 import PostSingle from '../components/blog/post-single'
 import Layout from '../components/misc/layout'
-import { NextSeo } from 'next-seo'
+import type PostType from '../interfaces/post'
+import { getAllPosts, getAllTags, getLinksMapping, getPostBySlug } from '../lib/api'
+import { markdownToHtml } from '../lib/markdownToHtml'
 
 type Items = {
   title: string,
@@ -16,10 +16,11 @@ type Items = {
 type Props = {
   post: PostType
   slug: string
-  backlinks: { [k: string]: Items }
+  backlinks: { [k: string]: Items },
+  allTags: string[],
 }
 
-export default function Post({ post, backlinks }: Props) {
+export default function Post({ post, backlinks, allTags }: Props) {
   const router = useRouter()
   const description = post.excerpt.slice(0, 155)
   if (!router.isFallback && !post?.slug) {
@@ -52,6 +53,7 @@ export default function Post({ post, backlinks }: Props) {
             date={post.date}
             author={post.author}
             backlinks={backlinks}
+            allTags={allTags}
           />
         </Layout>
       )}
@@ -92,6 +94,7 @@ export async function getStaticProps({ params }: Params) {
         content,
       },
       backlinks: backlinkNodes,
+      allTags: await getAllTags(),
     },
   }
 }
@@ -104,7 +107,7 @@ export async function getStaticPaths() {
         params: {
           slug: post.slug.split(path.sep),
         },
-      } 
+      }
     }),
     fallback: false,
   }

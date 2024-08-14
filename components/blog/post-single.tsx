@@ -1,6 +1,6 @@
-import React from 'react';
 import Author from '../../interfaces/author';
 import Backlinks from '../misc/backlinks';
+import TagExplorer from '../misc/tag-explorer';
 import PostBody from './post-body';
 import PostMeta from './post-meta';
 
@@ -13,7 +13,8 @@ type Props = {
       title: string,
       excerpt: string,
     }
-  }
+  },
+  allTags: string[],
 }
 
 function PostSingle({
@@ -21,7 +22,8 @@ function PostSingle({
   date,
   author,
   content,
-  backlinks
+  backlinks,
+  allTags
 }: Props) {
   return (
     <section>
@@ -68,6 +70,7 @@ function PostSingle({
                             <Backlinks backlinks={backlinks} />
                         )
                       }
+                      <TagExplorer tags={allTags} />
                     </div>
                   </div>
                 </aside>
