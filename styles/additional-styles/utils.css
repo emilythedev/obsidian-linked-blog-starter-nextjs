@@ -22,11 +22,11 @@
 
 /* Typography */
 .h1 {
-    @apply text-4xl font-extrabold leading-tight tracking-tighter;
+    @apply text-4xl font-extrabold leading-tight tracking-wider;
 }
 
 .h2 {
-    @apply text-3xl font-extrabold leading-tight tracking-tighter;
+    @apply text-3xl font-extrabold leading-tight;
 }
 
 .h3 {
@@ -34,7 +34,7 @@
 }
 
 .h4 {
-    @apply text-2xl font-bold leading-snug tracking-tight;
+    @apply text-2xl font-bold leading-snug;
 }
 
 @screen md {
