@@ -1,10 +1,12 @@
+import Link from 'next/link';
 
 const TagExplorer = ({ tags }: { tags: string[] }) => {
-  console.log(tags)
   return (
-    <ul>
-      {tags.map(tag => (<li key={tag}>{tag}</li>))}
-    </ul>
+    <>
+      {tags.map(tag => (
+        <Link key={tag} as={`/tags/${tag}`} href="/tags/[...tag]">#{tag}</Link>
+      ))}
+    </>
   );
 };
 
