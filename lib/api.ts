@@ -1,8 +1,9 @@
 import fs from 'fs'
-import path from 'path'
 import matter from 'gray-matter'
-import { getFilesRecursively } from './modules/find-files-recusively.mjs'
+import path from 'path'
+import { TAG_REGEX } from './constants'
 import { getMDExcerpt } from './markdownToHtml'
+import { getFilesRecursively } from './modules/find-files-recusively.mjs'
 
 const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR)
 
@@ -48,6 +49,9 @@ function parseFileToObj(pathToObj: string) {
   } else if (typeof data['date'] !== 'undefined') {
     data['date'] = data['date'].toString()
   }
+
+  data['tags'] = Array.from(content.matchAll(TAG_REGEX), m => m[1]);
+
   return data
 }
 
