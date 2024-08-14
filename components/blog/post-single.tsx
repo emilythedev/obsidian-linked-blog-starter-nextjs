@@ -40,11 +40,11 @@ function PostSingle({
               </header>
 
               {/* Article content */}
-              <div className="lg:flex lg:justify-between" data-sticky-container>
+              <div className="lg:flex" data-sticky-container>
 
 
                 {/* Main content */}
-                <div>
+                <div className="lg:flex-1">
 
                   {/* Article meta */}
                   {(author || date) && (
