@@ -1,4 +1,6 @@
-import { useRouter } from 'next/router';
+"use client";
+
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from "react";
 import PostPreview from "../blog/post-preview";
 
@@ -23,9 +25,10 @@ function useOutsideAlerter(ref, callback) {
 }
 
 function Search({ visible, setVisible }) {
-  const router = useRouter();
-  const inputRef = useRef(null);
-  const containerRef = useRef(null);
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [searchResults, setSearchResults] = useState([])
 
   useEffect(() => {
@@ -58,7 +61,7 @@ function Search({ visible, setVisible }) {
 
   useEffect(() => {
     setVisible(false);
-  }, [router.asPath])
+  }, [pathname, searchParams])
 
 
   async function handleChangeInput(e) {

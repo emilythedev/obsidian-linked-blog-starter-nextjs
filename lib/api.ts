@@ -113,8 +113,8 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
   return markdown
 }
 
-export async function getAllTags() {
-  const posts = await getAllPosts(['tags']);
+export function getAllTags() {
+  const posts = getAllPosts(['tags']);
   // console.log(posts)
 
   const allTags: string[] = [];

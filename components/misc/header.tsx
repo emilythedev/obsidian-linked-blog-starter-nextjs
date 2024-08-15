@@ -1,18 +1,20 @@
-import Link from 'next/link'
+"use client";
+
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Search from './search';
 
 const Header = () => {
   const [top, setTop] = useState(true);
   const [searching, setSearching] = useState(false);
-  // detect whether user has scrolled the page down by 10px 
+  // detect whether user has scrolled the page down by 10px
   useEffect(() => {
     const scrollHandler = () => {
       window.pageYOffset > 10 ? setTop(false) : setTop(true)
     };
     window.addEventListener('scroll', scrollHandler);
     return () => window.removeEventListener('scroll', scrollHandler);
-  }, [top]);  
+  }, [top]);
 
   return (
     <header className={`fixed w-full z-30 md:bg-white/90 transition duration-300 ease-in-out ${!top && 'bg-white backdrop-blur-sm shadow-lg'}`}>

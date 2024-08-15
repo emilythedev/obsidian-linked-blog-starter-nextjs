@@ -1,16 +1,17 @@
-import {unified} from 'unified'
-import remarkParse from 'remark-parse'
-import remarkGfm from 'remark-gfm'
-import remarkRehype from 'remark-rehype'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeRewrite from 'rehype-rewrite';
-import rehypeStringify from 'rehype-stringify'
-import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
-import removeMd from 'remove-markdown'
-import {Element} from 'hast-util-select'
-import { renderToStaticMarkup } from "react-dom/server"
-import NotePreview from '../components/misc/note-preview'
 import { fromHtml } from 'hast-util-from-html'
+import { Element } from 'hast-util-select'
+import { createElement } from 'react'
+import rehypeRewrite from 'rehype-rewrite'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeStringify from 'rehype-stringify'
+import { Root } from 'rehype-stringify/lib'
+import remarkGfm from 'remark-gfm'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import removeMd from 'remove-markdown'
+import { unified } from 'unified'
+import NotePreview from '../components/misc/note-preview'
+import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
 
 
 export async function markdownToHtml(markdown: string, currSlug: string) {
@@ -19,11 +20,19 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   // get mapping of current links
   const links = (getLinksMapping())[currSlug] as string[]
   const linkNodeMapping = new Map<string, Element>();
+  const createLinkNodePromises: Promise<Root>[] = [];
   for (const l of links) {
     const post = getPostBySlug(l, ['title', 'content']);
-    const node = createNoteNode(post.title, post.content)
-    linkNodeMapping[l] = node
+    createLinkNodePromises.push(
+      createNoteNode(post.title, post.content)
+        .then(node => {
+          linkNodeMapping[l] = node;
+          return node;
+        })
+    );
   }
+
+  await Promise.all(createLinkNodePromises);
 
   const file = await unified()
     .use(remarkParse)
@@ -42,15 +51,16 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
 
 export function getMDExcerpt(markdown: string, length: number = 500) {
   const text = removeMd(markdown, {
-    stripListLeaders: false, 
+    stripListLeaders: false,
     gfm: true,
   }) as string
   return text.slice(0, length).trim();
 }
 
-export function createNoteNode(title: string, content: string) {
+export async function createNoteNode(title: string, content: string) {
+  const { renderToStaticMarkup } = await import('react-dom/server')
   const mdContentStr = getMDExcerpt(content);
-  const htmlStr = renderToStaticMarkup(NotePreview({ title, content: mdContentStr }))
+  const htmlStr = renderToStaticMarkup(createElement(NotePreview, { title, content: mdContentStr }))
   const noteNode = fromHtml(htmlStr);
   return noteNode;
 }
