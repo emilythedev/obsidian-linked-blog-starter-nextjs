@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Search from './search';
 
 const Header = () => {
@@ -26,7 +26,9 @@ const Header = () => {
           </h2>
           <ul className="flex grow justify-end flex-wrap items-center">
             <li>
-              <Search />
+              <Suspense>
+                <Search />
+              </Suspense>
             </li>
           </ul>
         </div>
