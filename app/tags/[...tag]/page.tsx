@@ -1,5 +1,6 @@
 import path from 'path';
 import PostPreview from '../../../components/blog/post-preview';
+import Layout from '../../../components/misc/layout';
 import { getAllPosts, getAllTags } from '../../../lib/api';
 
 type Item = {
@@ -38,29 +39,21 @@ const Page = async ({ params }: { params: Params }) => {
   const { posts, tag } = await getPosts(path.join(...params.tag.map(decodeURIComponent)));
 
   return (
-    <section>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="pt-32 pb-12 md:pt-40 md:pb-20">
-          <div className="max-w-3xl mx-auto lg:max-w-none">
-            <h1 className="h1 text-center mb-4 text-6xl">#{tag}</h1>
+    <Layout>
+      <header className="max-w-3xl mx-auto mb-20">
+        <h1 className="h1 text-center mb-4 text-6xl">#{tag}</h1>
+      </header>
 
-            <div className="lg:flex">
-              <div className="lg:flex-1">
-                {posts.map(post => (
-                  <PostPreview
-                    key={post.slug}
-                    title={post.title}
-                    date={post.date}
-                    excerpt={post.excerpt}
-                    slug={post.slug}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      {posts.map(post => (
+        <PostPreview
+          key={post.slug}
+          title={post.title}
+          date={post.date}
+          excerpt={post.excerpt}
+          slug={post.slug}
+        />
+      ))}
+     </Layout>
   );
 };
 
