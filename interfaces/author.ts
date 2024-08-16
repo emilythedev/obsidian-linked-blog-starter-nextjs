@@ -1,4 +1,4 @@
-type Author = {
+type Author = string | {
   name: string
   picture: string
 }
