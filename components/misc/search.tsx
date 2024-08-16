@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
-import { searchPosts, SearchResult } from '../../actions';
+import { Dispatch, ReactNode, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
+import { searchPosts, SearchResultPost } from '../../actions';
 import PostPreview from "../blog/post-preview";
 
 
@@ -56,14 +56,52 @@ function useKeyboardControl(
   return [visible, setVisible];
 }
 
-function Search() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+const Loading = ({ loading, children }: { loading: boolean, children: ReactNode }) => {
+  if (loading) {
+    return (<div>Loading...</div>);
+  }
 
+  return (<>{children}</>)
+};
+
+const SearchResults = ({ searchText }: { searchText: string }) => {
+  const [loading, setLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResultPost[]>([])
+
+  useEffect(() => {
+    if (!searchText) return;
+
+    setLoading(true);
+    searchPosts(searchText)
+      .then(setSearchResults)
+      .finally(() => setLoading(false))
+  }, [searchText]);
+
+  return (
+    <Loading loading={loading}>
+      {searchText && <p className="text-base">{searchResults.length} results:</p>}
+      {searchResults.map((post) => (
+        <PostPreview
+          key={post.slug}
+          title={post.title}
+          excerpt={post.excerpt}
+          slug={post.slug}
+          date={post.date}
+          author={post.author}
+        />
+      ))}
+    </Loading>
+  );
+};
+
+function Search() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [searchText, setSearchText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useKeyboardControl(inputRef, '/');
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
 
   useOutsideAlerter(containerRef, (e: MouseEvent) => {
     setVisible(false);
@@ -72,11 +110,7 @@ function Search() {
 
   useEffect(() => {
     setVisible(false);
-  }, [pathname, searchParams])
-
-  async function handleChangeInput(e) {
-    setSearchResults(await searchPosts(e.target.value));
-  }
+  }, [pathname, searchParams]);
 
   return (
     <>
@@ -95,7 +129,7 @@ function Search() {
           <div className="w-full mb-16">
             <label className="block text-sm sr-only" htmlFor="search">Search</label>
             <div className="relative flex items-center">
-              <input ref={inputRef} id="search" type="search" className="form-input w-full text-gray-800 px-3 py-2 pl-10" placeholder="Search my notes" onChange={handleChangeInput}/>
+              <input ref={inputRef} id="search" type="search" className="form-input w-full text-gray-800 px-3 py-2 pl-10" placeholder="Search my notes" onChange={(e) => setSearchText(e.target.value)} value={searchText} />
               <span aria-hidden className="absolute inline-block inset-0 right-auto flex items-center">
                 <svg className="w-4 h-4 fill-current text-gray-400 mx-3 shrink-0" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                   <path d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5zM15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z" />
@@ -104,17 +138,7 @@ function Search() {
             </div>
           </div>
 
-          {/* Search Results */}
-          {searchResults.map((post) => (
-            <PostPreview
-              key={post.slug}
-              title={post.title}
-              excerpt={post.excerpt}
-              slug={post.slug}
-              date={post.date}
-              author={post.author}
-            />
-          ))}
+          <SearchResults searchText={searchText} />
         </div>
       </div>
 

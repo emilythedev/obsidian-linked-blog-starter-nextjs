@@ -5,7 +5,7 @@ import Author from './interfaces/author';
 import { getAllPosts } from './lib/api';
 import { getMDExcerpt } from './lib/markdownToHtml';
 
-export type SearchResult = {
+export type SearchResultPost = {
   slug: string,
   title: string,
   excerpt: string,
@@ -24,7 +24,7 @@ const searchIndex = allPosts.map((p) => {
     excerpt: getMDExcerpt(p.content),
     date: p.date,
     author: p.author,
-  } as SearchResult;
+  } as SearchResultPost;
 });
 const searcher = new Searcher(searchIndex, {
   keySelector: (obj) => `${obj.title}\n${obj.excerpt}`
