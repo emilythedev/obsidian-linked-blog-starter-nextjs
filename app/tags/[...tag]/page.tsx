@@ -1,6 +1,7 @@
 import path from 'path';
 import PostPreview from '../../../components/blog/post-preview';
 import Layout from '../../../components/misc/layout';
+import TagExplorer from '../../../components/misc/tag-explorer';
 import { getAllPosts, getAllTags } from '../../../lib/api';
 
 type Item = {
@@ -39,7 +40,13 @@ const Page = async ({ params }: { params: Params }) => {
   const { posts, tag } = await getPosts(path.join(...params.tag.map(decodeURIComponent)));
 
   return (
-    <Layout>
+    <Layout
+      sidebar={(
+        <div className="flex flex-col gap-6">
+          <TagExplorer />
+        </div>
+      )}
+    >
       <header className="max-w-3xl mx-auto mb-20">
         <h1 className="h1 text-center mb-4 text-6xl">#{tag}</h1>
       </header>

@@ -15,7 +15,6 @@ type Props = {
       excerpt: string,
     }
   },
-  allTags: string[],
 }
 
 function PostSingle({
@@ -24,21 +23,23 @@ function PostSingle({
   author,
   content,
   backlinks,
-  allTags
 }: Props) {
   return (
     <Layout
       sidebar={(
-        <div>
-          <h4 className="text-lg font-bold leading-snug tracking-tight mb-4">Backlinks</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
-            {
-              (Object.keys(backlinks).length > 0) && (
-                  <Backlinks backlinks={backlinks} />
-              )
-            }
-            <TagExplorer tags={allTags} />
+        <div className="flex flex-col gap-6">
+          <div>
+            <h4 className="text-lg font-bold leading-snug mb-4">Backlinks</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+              {
+                (Object.keys(backlinks).length > 0) ? (
+                    <Backlinks backlinks={backlinks} />
+                ) : (<p className="text-base">No backlinks.</p>)
+              }
+            </div>
           </div>
+
+          <TagExplorer />
         </div>
       )}
     >

@@ -1,7 +1,7 @@
 import path from 'path';
 import PostSingle from '../../components/blog/post-single';
 import PostType from '../../interfaces/post';
-import { getAllPosts, getAllTags, getLinksMapping, getPostBySlug } from '../../lib/api';
+import { getAllPosts, getLinksMapping, getPostBySlug } from '../../lib/api';
 import { markdownToHtml } from '../../lib/markdownToHtml';
 
 type Items = {
@@ -43,7 +43,6 @@ type Params = {
   slug: string[],
 };
 
-const allTags = getAllTags();
 const Page = async ({ params }: { params: Params }) => {
   const { post, backlinks } = await getPostAndBacklinks(path.join(...params.slug.map(decodeURIComponent)));
 
@@ -54,7 +53,6 @@ const Page = async ({ params }: { params: Params }) => {
       date={post.date}
       author={post.author}
       backlinks={backlinks}
-      allTags={allTags}
     />
   );
 };
