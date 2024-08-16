@@ -5,7 +5,7 @@ import { TAG_REGEX } from './constants'
 import { getMDExcerpt } from './markdownToHtml'
 import { getFilesRecursively } from './modules/find-files-recusively.mjs'
 
-const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR)
+const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR || '')
 
 export function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md(?:#[^\)]*)?$/, '')
@@ -68,10 +68,10 @@ export function getLinksMapping() {
   const linksMapping = new Map<string, string[]>();
   const postsMapping = new Map((getAllPosts(['slug', 'content'])).map(i => [i.slug, i.content]));
   const allSlugs = new Set(postsMapping.keys());
-  postsMapping.forEach((content, slug) => {
+  postsMapping.forEach((content: string, slug) => {
     const mdLink = /\[[^\[\]]+\]\(([^\(\)]+)\)/g
     const matches = Array.from(content.matchAll(mdLink))
-    const linkSlugs = []
+    const linkSlugs: string[] = []
     for (var m of matches) {
       const linkSlug = getSlugFromHref(slug, m[1])
       if (allSlugs.has(linkSlug)) {
@@ -98,7 +98,7 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
     if (!m2.startsWith(slugDir)) {
       relLink = path.join(slugDir, m2)
     }
-    const relAssetDir = path.relative('./public', process.env.MD_ASSET_DIR)
+    const relAssetDir = path.relative('./public', process.env.MD_ASSET_DIR || '')
     const fileSlugRel = decodeURI(path.join(mdDir, relLink))
     const fileSlugAbs = decodeURI(path.join(mdDir, m2))
     if (fs.existsSync(fileSlugRel)) {
