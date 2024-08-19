@@ -115,7 +115,6 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
 
 export function getAllTags() {
   const posts = getAllPosts(['tags']);
-  // console.log(posts)
 
   const allTags: string[] = [];
 
@@ -127,3 +126,36 @@ export function getAllTags() {
 
   return allTags;
 };
+
+interface TagNode {
+  label: string,
+  fullPath: string,
+  children: TagNode[],
+}
+
+export function getTagNodes(tags: string[]) {
+  const root: TagNode = {
+    label: '',
+    fullPath: '',
+    children: [],
+  };
+
+  const tagMap: Record<string, TagNode> = {};
+
+  tags.forEach(tag => {
+    const parts = tag.split('/');
+    let currentNode = root;
+    let currentPath = '';
+
+    for (const part of parts) {
+      const fullPath = currentPath ? `${currentPath}/${part}` : part;
+      const child = tagMap[fullPath] || { label: part, fullPath, children: [] };
+      currentNode.children.push(child);
+      tagMap[fullPath] = child;
+      currentNode = child;
+      currentPath = fullPath;
+    }
+  });
+
+  return root;
+}

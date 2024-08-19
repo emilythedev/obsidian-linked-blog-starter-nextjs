@@ -1,7 +1,7 @@
 import PostPreview from '@/components/blog/post-preview';
 import Layout from '@/components/misc/layout';
 import TagExplorer from '@/components/misc/tag-explorer';
-import { getAllPosts, getAllTags } from '@/lib/api';
+import { getAllPosts, getAllTags, getTagNodes } from '@/lib/api';
 import path from 'path';
 
 type Item = {
@@ -20,13 +20,22 @@ const posts = getAllPosts([
   'tags',
 ]) as Item[];
 
+const generateAllTagPaths = (tags: string[]) => {
+  return tags.flatMap(tag => {
+    let parent = '';
+    return tag.split('/').map(part => {
+      return (parent = (parent ? [parent, part].join('/') : part));
+    });
+  });
+};
+
 const getPosts = async (tag: string) : Promise<{
   posts: Item[],
   tag: string,
 }> => {
   return {
     posts: posts.filter((post) => {
-      return (post.tags as string[]).includes(tag);
+      return generateAllTagPaths(post.tags as string[]).includes(tag);
     }),
     tag,
   };
@@ -68,10 +77,24 @@ export default Page;
 
 export const dynamicParams = false;
 
-const tags = getAllTags();
+const getAllTagPaths = () => {
+  const tags = getAllTags();
+  const nodes = getTagNodes(tags);
+
+  const fullPaths: string[] = [];
+
+  function traverse(node) {
+    fullPaths.push(node.fullPath);
+    node.children.forEach(traverse);
+  }
+
+  nodes.children.forEach(traverse);
+
+  return fullPaths;
+}
 
 export async function generateStaticParams() {
-  return tags.map((tag) => ({
+  return getAllTagPaths().map((tag) => ({
     tag: tag.split(path.sep).map(encodeURIComponent),
   })) as Params[];
 }
