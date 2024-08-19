@@ -1,6 +1,7 @@
 import PostPreview from '@/components/blog/post-preview';
 import Layout from '@/components/misc/layout';
 import TagExplorer from '@/components/misc/tag-explorer';
+import TagNode from '@/interfaces/tag';
 import { getAllPosts, getAllTags, getTagNodes } from '@/lib/api';
 import path from 'path';
 
@@ -83,7 +84,7 @@ const getAllTagPaths = () => {
 
   const fullPaths: string[] = [];
 
-  function traverse(node) {
+  function traverse(node: TagNode) {
     fullPaths.push(node.fullPath);
     node.children.forEach(traverse);
   }

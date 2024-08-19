@@ -1,3 +1,4 @@
+import TagNode from '@/interfaces/tag'
 import fs from 'fs'
 import matter from 'gray-matter'
 import path from 'path'
@@ -127,12 +128,6 @@ export function getAllTags() {
   return allTags;
 };
 
-interface TagNode {
-  label: string,
-  fullPath: string,
-  children: TagNode[],
-}
-
 export function getTagNodes(tags: string[]) {
   const root: TagNode = {
     label: '',
@@ -157,6 +152,12 @@ export function getTagNodes(tags: string[]) {
       currentNode = tagMap[fullPath];
       currentPath = fullPath;
     }
+  });
+
+  const compareFn = (node1: TagNode, node2: TagNode) => ((node2.children.length ? 1 : 0) - (node1.children.length ? 1 : 0));
+  root.children.sort(compareFn);
+  Object.keys(tagMap).forEach(key => {
+    tagMap[key].children.sort(compareFn);
   });
 
   return root;
