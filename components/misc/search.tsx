@@ -1,9 +1,9 @@
 "use client";
 
+import { searchPosts, SearchResultPost } from '@/actions';
+import PostPreview from "@/components/blog/post-preview";
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Dispatch, ReactNode, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
-import { searchPosts, SearchResultPost } from '../../actions';
-import PostPreview from "../blog/post-preview";
 
 
 function useOutsideAlerter(ref, callback) {

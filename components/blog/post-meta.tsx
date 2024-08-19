@@ -1,5 +1,5 @@
-import Author from "../../interfaces/author";
-import DateFormatter from "../misc/date-formatter";
+import DateFormatter from "@/components/misc/date-formatter";
+import Author from "@/interfaces/author";
 
 type Props = {
   author?: Author,

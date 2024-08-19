@@ -1,8 +1,8 @@
+import PostSingle from '@/components/blog/post-single';
+import PostType from '@/interfaces/post';
+import { getAllPosts, getLinksMapping, getPostBySlug } from '@/lib/api';
+import { markdownToHtml } from '@/lib/markdownToHtml';
 import path from 'path';
-import PostSingle from '../../components/blog/post-single';
-import PostType from '../../interfaces/post';
-import { getAllPosts, getLinksMapping, getPostBySlug } from '../../lib/api';
-import { markdownToHtml } from '../../lib/markdownToHtml';
 
 type Items = {
   title: string,

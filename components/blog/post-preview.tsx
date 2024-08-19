@@ -1,5 +1,5 @@
+import type Author from '@/interfaces/author'
 import Link from "next/link"
-import type Author from '../../interfaces/author'
 import PostMeta from "./post-meta"
 
 type Props = {

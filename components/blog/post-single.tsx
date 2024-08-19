@@ -1,7 +1,7 @@
-import Author from '../../interfaces/author';
-import Backlinks from '../misc/backlinks';
-import Layout from '../misc/layout';
-import TagExplorer from '../misc/tag-explorer';
+import Backlinks from '@/components/misc/backlinks';
+import Layout from '@/components/misc/layout';
+import TagExplorer from '@/components/misc/tag-explorer';
+import Author from '@/interfaces/author';
 import PostBody from './post-body';
 import PostMeta from './post-meta';
 

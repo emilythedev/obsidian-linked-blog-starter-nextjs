@@ -1,5 +1,5 @@
-import Header from '../components/misc/header';
-import '../styles/index.css';
+import Header from '@/components/misc/header';
+import '@/styles/index.css';
 
 export default function RootLayout({
   children,

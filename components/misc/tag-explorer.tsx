@@ -1,5 +1,5 @@
+import { getAllTags } from '@/lib/api';
 import Link from 'next/link';
-import { getAllTags } from '../../lib/api';
 
 const allTags = getAllTags();
 

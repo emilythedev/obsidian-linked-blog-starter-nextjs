@@ -1,8 +1,8 @@
+import PostPreview from '@/components/blog/post-preview';
+import Layout from '@/components/misc/layout';
+import TagExplorer from '@/components/misc/tag-explorer';
+import { getAllPosts, getAllTags } from '@/lib/api';
 import path from 'path';
-import PostPreview from '../../../components/blog/post-preview';
-import Layout from '../../../components/misc/layout';
-import TagExplorer from '../../../components/misc/tag-explorer';
-import { getAllPosts, getAllTags } from '../../../lib/api';
 
 type Item = {
   title: string,

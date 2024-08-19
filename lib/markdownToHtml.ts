@@ -1,3 +1,4 @@
+import NotePreview from '@/components/misc/note-preview'
 import { fromHtml } from 'hast-util-from-html'
 import { Element } from 'hast-util-select'
 import { createElement } from 'react'
@@ -10,7 +11,6 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import removeMd from 'remove-markdown'
 import { unified } from 'unified'
-import NotePreview from '../components/misc/note-preview'
 import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
 
 
