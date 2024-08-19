@@ -149,10 +149,12 @@ export function getTagNodes(tags: string[]) {
 
     for (const part of parts) {
       const fullPath = currentPath ? `${currentPath}/${part}` : part;
-      const child = tagMap[fullPath] || { label: part, fullPath, children: [] };
-      currentNode.children.push(child);
-      tagMap[fullPath] = child;
-      currentNode = child;
+      if (!tagMap[fullPath]) {
+        const child = { label: part, fullPath, children: [] };
+        currentNode.children.push(child);
+        tagMap[fullPath] = child;
+      }
+      currentNode = tagMap[fullPath];
       currentPath = fullPath;
     }
   });
