@@ -1,17 +1,20 @@
 import NotePreview from '@/components/misc/note-preview'
 import { fromHtml } from 'hast-util-from-html'
+import { Root as HastNode } from 'hast-util-from-html/lib'
 import { Element } from 'hast-util-select'
+import { findAndReplace } from 'mdast-util-find-and-replace'
+import { Root as MdastRoot } from 'mdast-util-find-and-replace/lib'
 import { createElement } from 'react'
 import rehypeRewrite from 'rehype-rewrite'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
-import { Root } from 'rehype-stringify/lib'
 import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import removeMd from 'remove-markdown'
 import { unified } from 'unified'
 import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
+import { TAG_IN_NODE_REGEX } from './constants'
 
 
 export async function markdownToHtml(markdown: string, currSlug: string) {
@@ -20,7 +23,7 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   // get mapping of current links
   const links = (getLinksMapping())[currSlug] as string[]
   const linkNodeMapping = new Map<string, Element>();
-  const createLinkNodePromises: Promise<Root>[] = [];
+  const createLinkNodePromises: Promise<HastNode>[] = [];
   for (const l of links) {
     const post = getPostBySlug(l, ['title', 'content']);
     createLinkNodePromises.push(
@@ -37,6 +40,29 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   const file = await unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(() => {
+      return (tree: MdastRoot, file) => {
+        findAndReplace(tree, [
+          [TAG_IN_NODE_REGEX, (tag: string, tagPath: string) => {
+            return {
+              type: 'link',
+              url: `/tags/${tagPath}`,
+              data: {
+                hProperties: {
+                  className: ["tag-link"],
+                },
+              },
+              children: [
+                {
+                  type: "text",
+                  value: tag,
+                },
+              ],
+            };
+          }]
+        ])
+      };
+    })
     .use(remarkRehype)
     .use(rehypeSanitize)
     .use(rehypeRewrite, {

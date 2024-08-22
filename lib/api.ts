@@ -2,7 +2,7 @@ import TagNode from '@/interfaces/tag'
 import fs from 'fs'
 import matter from 'gray-matter'
 import path from 'path'
-import { TAG_REGEX } from './constants'
+import { TAG_IN_CONTENT_REGEX } from './constants'
 import { getMDExcerpt } from './markdownToHtml'
 import { getFilesRecursively } from './modules/find-files-recusively.mjs'
 
@@ -51,7 +51,7 @@ function parseFileToObj(pathToObj: string) {
     data['date'] = data['date'].toString()
   }
 
-  data['tags'] = Array.from(content.matchAll(TAG_REGEX), m => m[1]);
+  data['tags'] = Array.from(content.matchAll(TAG_IN_CONTENT_REGEX), m => m[1]);
 
   return data
 }
