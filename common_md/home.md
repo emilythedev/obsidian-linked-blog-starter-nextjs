@@ -3,15 +3,22 @@ title: An Extendable Obsidian Publish alternative using Next.JS
 excerpt: Create your own template or use someone else's. Changing the template is a matter of updating one line
 ---
 
+## A fork from [linked-blog-starter](https://github.com/matthewwong525/linked-blog-starter)
+
+- Use app router instead of page router
+- Replace API handler with server action
+- Support tag \#foo/bar
+- Support ==highlight==
+
 ## Problems with Obsidian Publish Alternatives (from ChatGPT):
 
- > 
- > **Compatibility**: Not all Obsidian Publish alternatives may be compatible with all versions of Obsidian or all markdown syntax, which can make it difficult to use certain tools or services. 
- > 
+ >
+ > **Compatibility**: Not all Obsidian Publish alternatives may be compatible with all versions of Obsidian or all markdown syntax, which can make it difficult to use certain tools or services.
+ >
  > **Ease of use:** Some Obsidian Publish alternatives may be more difficult to set up or use than others, which can make it frustrating for new users to get started.
- > 
+ >
  > **Customization**: Some Obsidian Publish alternatives may not offer as much customization as users may want, making it difficult to tailor the appearance and functionality of their published notes to their specific needs and preferences.
- > 
+ >
  > **Performance**: Some Obsidian Publish alternatives may not perform as quickly or smoothly as users may expect, which can make it frustrating to use.
 
 -- ChatGPT

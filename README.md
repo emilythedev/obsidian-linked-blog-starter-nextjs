@@ -1,3 +1,10 @@
+This is a fork from [linked-blog-starter](https://github.com/matthewwong525/linked-blog-starter)
+
+- Use app router instead of page router
+- Replace API handler with server action
+- Support tag \#foo/bar
+- Support ==highlight==
+
 # A Customizable Obsidian Publish alternative using Next.JS
 
 Publish your Obsidian Notes with a highly customizable Next.JS blog starter template. Features:
