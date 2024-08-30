@@ -3,7 +3,7 @@ import { fromHtml } from 'hast-util-from-html'
 import { Root as HastNode } from 'hast-util-from-html/lib'
 import { Element } from 'hast-util-select'
 import { findAndReplace } from 'mdast-util-find-and-replace'
-import { Root as MdastRoot } from 'mdast-util-find-and-replace/lib'
+import { Root as MdastRoot, PhrasingContent } from 'mdast-util-find-and-replace/lib'
 import { createElement } from 'react'
 import rehypeRewrite from 'rehype-rewrite'
 import rehypeSanitize from 'rehype-sanitize'
@@ -15,7 +15,6 @@ import removeMd from 'remove-markdown'
 import { unified } from 'unified'
 import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
 import { TAG_IN_NODE_REGEX } from './constants'
-
 
 export async function markdownToHtml(markdown: string, currSlug: string) {
   markdown = updateMarkdownLinks(markdown, currSlug);
@@ -44,23 +43,31 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
       return (tree: MdastRoot, file) => {
         findAndReplace(tree, [
           [TAG_IN_NODE_REGEX, (tag: string, tagPath: string) => {
-            return {
+            const linkNode: PhrasingContent = {
               type: 'link',
               url: `/tags/${tagPath}`,
               data: {
                 hProperties: {
-                  className: ["tag-link"],
+                  className: ['tag-link'],
                 },
               },
               children: [
                 {
-                  type: "text",
-                  value: tag,
+                  type: 'text',
+                  value: tag.trimStart(),
                 },
               ],
             };
+
+            if (tag.startsWith(' ')) {
+              return [
+                { type: 'text', value: ' ' } as PhrasingContent,
+                linkNode,
+              ];
+            }
+            return linkNode;
           }]
-        ])
+        ]);
       };
     })
     .use(remarkRehype)
