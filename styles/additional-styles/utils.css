@@ -20,6 +20,10 @@
   background-color: rgb(243 250 251) !important;
 }
 
+.text-highlight {
+  background-color: #fff88f;
+}
+
 /* Typography */
 .h1 {
     @apply text-4xl font-extrabold tracking-wider;

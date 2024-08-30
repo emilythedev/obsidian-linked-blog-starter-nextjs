@@ -18,3 +18,5 @@ export const TAG_IN_NODE_REGEX = new RegExp(
   `(?:^| )#${TAG_CONTENT_REGEX_STRING}`,
   'gum'
 );
+
+export const HIGHLIGHT_REGEX = new RegExp(/==([^=]+)==/g);

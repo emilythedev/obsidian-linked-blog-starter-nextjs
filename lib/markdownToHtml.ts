@@ -1,12 +1,14 @@
 import NotePreview from '@/components/misc/note-preview'
 import { fromHtml } from 'hast-util-from-html'
 import { Root as HastNode } from 'hast-util-from-html/lib'
+import { raw } from 'hast-util-raw'
 import { Element } from 'hast-util-select'
 import { findAndReplace } from 'mdast-util-find-and-replace'
 import { Root as MdastRoot, PhrasingContent } from 'mdast-util-find-and-replace/lib'
+import { toHast } from 'mdast-util-to-hast'
 import { createElement } from 'react'
 import rehypeRewrite from 'rehype-rewrite'
-import rehypeSanitize from 'rehype-sanitize'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
@@ -14,7 +16,7 @@ import remarkRehype from 'remark-rehype'
 import removeMd from 'remove-markdown'
 import { unified } from 'unified'
 import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
-import { TAG_IN_NODE_REGEX } from './constants'
+import { HIGHLIGHT_REGEX, TAG_IN_NODE_REGEX } from './constants'
 
 export async function markdownToHtml(markdown: string, currSlug: string) {
   markdown = updateMarkdownLinks(markdown, currSlug);
@@ -66,12 +68,38 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
               ];
             }
             return linkNode;
+          }],
+          [HIGHLIGHT_REGEX, (_: string, text: string) => {
+            return {
+              type: 'html',
+              value: `<span class="text-highlight">${text}</span>`,
+            };
           }]
         ]);
       };
     })
-    .use(remarkRehype)
-    .use(rehypeSanitize)
+    .use(remarkRehype, {
+      handlers: {
+        html: (state, node, parent) => {
+          const convertedRoot = raw(toHast(node, { allowDangerousHtml: true })!)
+          return convertedRoot.children[0]
+        }
+      },
+    })
+    .use(rehypeSanitize, {
+      ...defaultSchema,
+      attributes: {
+        ...defaultSchema.attributes,
+        a: [
+          ...(defaultSchema.attributes?.a || []),
+          ['className', 'tag-link'],
+        ],
+        span: [
+          ...(defaultSchema.attributes?.span || []),
+          ['className', 'text-highlight'],
+        ],
+      },
+    })
     .use(rehypeRewrite, {
       selector: 'a',
       rewrite: async (node) => rewriteLinkNodes(node, linkNodeMapping, currSlug)
